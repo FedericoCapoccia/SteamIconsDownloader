@@ -1,5 +1,7 @@
 ## Steam icons downloader
 
-Downloads the icon of every installed game, converts them to various resolutions and put them in the specified theme directory
+First run install_deps that will install the required dependecies locally in the script directory
+Then you can change the paths of the icon theme and the resolution of the icons inside main.py
+By default the script will use /tmp and the GNOME default icon theme 'hicolor'
 
-#### You can change the path of the theme in the script
+### This script is meant to be used on Linux, maybe someday I'll make it work on Windows too
