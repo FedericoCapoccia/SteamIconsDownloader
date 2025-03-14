@@ -1,12 +1,12 @@
 import os
 import sys
-import string
 from urllib.request import urlretrieve
 import subprocess
 
 sys.path.insert(0, os.path.abspath("deps"))
 import vdf
 from steam.client import SteamClient
+from PIL import Image
 
 HOME = os.getenv("HOME")
 TMP = "/tmp/"
@@ -19,15 +19,15 @@ libinfo_dir = str(HOME) + "/.local/share/Steam/steamapps/libraryfolders.vdf"
 icons_path = str(HOME) + "/.local/share/icons/hicolor/"
 
 resolutions = [
-    "16x16",
-    "24x24",
-    "32x32",
-    "48x48",
-    "64x64",
-    "96x96",
-    "128x128",
-    "192x192",
-    "256x256",
+    256,
+    192,
+    128,
+    96,
+    64,
+    48,
+    32,
+    24,
+    16,
 ]
 
 id_list = []
@@ -82,33 +82,23 @@ def main():
                     trials += 1
                     print("Failed to retrieve icon, retrying...")
 
-            for res in resolutions:
-                subprocess.run(
-                    [
-                        "magick",
-                        os.path.join(TMP, icon_filename),
-                        "-thumbnail",
-                        res,
-                        "-alpha",
-                        "on",
-                        "-background",
-                        "none",
-                        "-flatten",
-                        os.path.join(TMP, png_filename),
-                    ],
-                    check=True,
-                )
+            img = Image.open(os.path.join(TMP, icon_filename))
+            print("Icon size: ", img.size)
 
-                subprocess.run(
-                    [
-                        "mv",
-                        "-f",
-                        os.path.join(TMP, png_filename),
-                        icons_path + str(res) + "/apps/" + png_filename,
-                    ],
-                    check=True,
-                )
+            max_size = img.width
+            # 0 for 256x256, 1 for 192x192 etc...
+            start_res_idx = resolutions.index(max_size)
 
+            for idx in range(start_res_idx, len(resolutions)):
+                size = resolutions[idx]
+                resized_img = img.resize((size, size), Image.Resampling.LANCZOS)
+
+                output_dir = icons_path + str(size) + "x" + str(size) + "/apps"
+                os.makedirs(output_dir, exist_ok=True)
+                output_path = os.path.join(output_dir, png_filename)
+                resized_img.save(output_path, format="PNG")
+
+            img.close()
             os.remove(os.path.join(TMP, icon_filename))
 
 
