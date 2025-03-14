@@ -1,6 +1,6 @@
 import subprocess
 
-dependencies = ["vdf" "steam[client]"]
+dependencies = ["vdf", "steam[client]"]
 
 for package in dependencies:
     subprocess.run(["pip", "install", "--target=deps", package])

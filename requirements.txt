@@ -1,0 +1,2 @@
+steam[client]~=1.4.4
+vdf~=3.4
