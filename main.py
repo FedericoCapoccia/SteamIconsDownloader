@@ -87,15 +87,17 @@ def main():
                     [
                         "magick",
                         os.path.join(TMP, icon_filename),
-                        "-resize",
+                        "-thumbnail",
                         res,
+                        "-alpha",
+                        "on",
+                        "-background",
+                        "none",
                         "-flatten",
                         os.path.join(TMP, png_filename),
                     ],
                     check=True,
                 )
-                print(os.path.join(TMP, png_filename))
-                print(icons_path + str(res) + "/apps/" + png_filename)
 
                 subprocess.run(
                     [
